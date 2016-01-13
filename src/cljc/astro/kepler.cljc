@@ -1,5 +1,6 @@
 (ns astro.kepler
   (:require [vecmath.vec :refer [dot cross scale mag sub normalize x-axis y-axis z-axis]]
+            [astro.universal-variable :as uv]
     [vecmath.quat :as qt]
             #?(:clj [clojure.pprint :refer [pprint]] :cljs [cljs.pprint :refer [pprint]])))
 
@@ -105,7 +106,7 @@
             (zero? i) { :OMEGA 0.0 :omega omega_true :nu nu }
             :default { :OMEGA OMEGA :omega omega :nu nu }))))
 
-(pprint (rv->coe {:r [1.023 1.076 1.011] :v [0.62 0.7 -0.25] :mu 1.0 }))
+;(pprint (rv->coe {:r [1.023 1.076 1.011] :v [0.62 0.7 -0.25] :mu 1.0 }))
 
 (defn coe->rv [{:keys [p e i OMEGA omega nu mu]}]
   (let [c (Math/cos nu)
@@ -141,10 +142,17 @@
              {:nu (anomaly->nu e fraz)})]
     (coe->rv (into keps nu))))
 
-(pprint (coe {:r [1.0230836995735855 1.0757893262467102 1.0111288755563401],
-      :v [0.6201204177935656 0.699922029799119 -0.24992014137296167],
-      :mu 1.0} 10.0))
+(def ic { :r [0.177378 -0.357838 1.046140]
+         :v  [-0.713825 0.544356 0.307233]
+         :mu 1.0})
 
-(pprint (coe->rv {:p 1.73527 :e 0.83285 :i (Math/toRadians 87.87)
-                  :OMEGA (Math/toRadians 227.89) :omega (Math/toRadians 53.38)
-                  :nu (Math/toRadians 92.335) :mu 1.0 }))
+(pprint (uv/kepler ic 2.974674))
+(pprint (coe ic 2.974674))
+
+;(pprint (coe {:r [1.0230836995735855 1.0757893262467102 1.0111288755563401],
+;      :v [0.6201204177935656 0.699922029799119 -0.24992014137296167],
+;      :mu 1.0} 10.0))
+;
+;(pprint (coe->rv {:p 1.73527 :e 0.83285 :i (Math/toRadians 87.87)
+;                  :OMEGA (Math/toRadians 227.89) :omega (Math/toRadians 53.38)
+;                  :nu (Math/toRadians 92.335) :mu 1.0 }))
